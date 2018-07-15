@@ -1,0 +1,33 @@
+[
+		{
+		"prompt" : ["a mood",
+        "a person",
+        "a activity",
+        "a place",
+        "a person",
+        "a object",
+        "a action"],
+		"story" : "It was a %s day, so %s went %s in the %s.  %s saw this so grabbed the nearest %s and started %s it!"
+		},
+		{
+		"prompt" : ["a person",
+        "a thing",
+        "a person",
+        "a mood"],
+		"story" : "%s arrived riding a %s, this made %s %s!"
+		},
+        {
+		"prompt" : ["a number",
+        "a person",
+        "a person",
+        "an action",
+        "an animal"],
+		"story" : "It was %s years ago when %s saw %s %s the last %s."
+        },
+        {
+        "prompt" : ["an animal",
+        "a place",
+        "a person"],
+        "story" : "The %s waited outside the %s for %s to leave."
+            }
+	]

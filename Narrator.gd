@@ -1,24 +1,28 @@
 extends Node2D
 
 var player_words = []
-
-var template = [
-		{
-		"prompt" : ["a mood", "a person", "a activity", "a place", "a person", "a object", "a action"],
-		"story" : "It was a %s day, so %s went %s in the %s.  %s saw this so grabbed the nearest %s and started %s it!"
-		},
-		{
-		"prompt" : ["a person", "a thing", "a person", "a mood"],
-		"story" : "%s arrived riding a %s, this made %s %s!"
-		}
-	]
 var current_story
+var strings # text displayed to the player
 
 func _ready():
-	randomize()
-	current_story = template [randi() % template.size()]
-	$Blackboard/StoryText.text = "Welcome to Loony Lips! \n\n Lets play a game!  I will ask you some questions and create a story from them! \n\n Can I have " + current_story.prompt[player_words.size()] + ", please."
+	set_random_story()
+	strings = get_from_json("other_strings.json")
+	$Blackboard/StoryText.text = strings["intro_text"]
+	prompt_player()
 	$Blackboard/EditBox.text = ""
+
+func set_random_story():
+	var stories = get_from_json("stories.json")
+	randomize()
+	current_story = stories [randi() % stories.size()]
+
+func get_from_json(filename):
+	var file = File.new() #the file object
+	file.open(filename, File.READ) #Assuming the file exists
+	var text = file.get_as_text()
+	var data = parse_json(text)
+	file.close()
+	return data
 
 func _on_OKButton_pressed():
 	if is_story_done():
@@ -30,13 +34,15 @@ func _on_OKButton_pressed():
 func _on_EditBox_text_entered(new_text):
 	player_words.append(new_text)
 	$Blackboard/EditBox.text = ""
+	$Blackboard/StoryText.text = ""
 	check_player_word_length()
 
 func is_story_done():
 	return player_words.size() == current_story.prompt.size()
 	
 func prompt_player():
-	$Blackboard/StoryText.text = ("Can I have " + current_story.prompt[player_words.size()] + ", please.")
+	var next_prompt = current_story["prompt"][player_words.size()]
+	$Blackboard/StoryText.text += (strings["prompt"] % next_prompt)
 
 func check_player_word_length():
 	if is_story_done():
@@ -47,6 +53,7 @@ func check_player_word_length():
 
 func tell_story():
 	$Blackboard/StoryText.text = current_story.story % player_words
+	$Blackboard/OKButton/RichTextLabel.text = strings["again"]
 	end_game()
 
 func end_game():

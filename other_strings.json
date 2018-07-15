@@ -1,0 +1,7 @@
+{
+        "intro_text" : "Welcome to Loony Lips! \n\n Lets play a game! \n\n I will ask you some questions and create a story from them!\n\n"
+        ,
+        "prompt" : "Can I have a %s please."
+        ,
+        "again" : "Again!"
+    }
