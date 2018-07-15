@@ -1,16 +1,42 @@
 extends Node2D
 
+var player_words = []
+var prompt = ["a mood", "a person", "a activity", "a place", "a person", "a object", "a action"]
+var story = "It was a %s day, so %s went for a %s in %s.  %s saw this so grabbed the nearest %s and started %s it!"
+var start = "Welcome, lets play a game.  I will ask you some questions and then create a story using them!"
+
 func _ready():
-	var prompt = ["hot", "John", "swim", "pond", "Amy", "rabbit", "tickling"]
-	var story = "It was a %s day, so %s went for a %s in the %s!  %s saw this so grabbed the nearest %s and started %s it!"
-	print (story % prompt)
-	$Blackboard/StoryText.text = story % prompt
+	$Blackboard/StoryText.text = "Welcome to Loony Lips! \n\n Lets play a game!  I will ask you some questions and create a story from them! \n\n Can I have " + prompt[player_words.size()] + ", please."
 	$Blackboard/EditBox.text = ""
 
 func _on_OKButton_pressed():
-	var new_text = $Blackboard/EditBox.get_text()
-	_on_EditBox_text_entered(new_text)
+	if is_story_done():
+		get_tree().reload_current_scene()
+	else:
+		var new_text = $Blackboard/EditBox.get_text()
+		_on_EditBox_text_entered(new_text)
 
 func _on_EditBox_text_entered(new_text):
-	$Blackboard/StoryText.text = new_text
+	player_words.append(new_text)
 	$Blackboard/EditBox.text = ""
+	check_player_word_length()
+
+func is_story_done():
+	return player_words.size() == prompt.size()
+	
+func prompt_player():
+	$Blackboard/StoryText.text = ("Can I have " + prompt[player_words.size()] + ", please.")
+
+func check_player_word_length():
+	if is_story_done():
+		tell_story()
+		$Blackboard/OKButton/RichTextLabel.text = "Again?"
+	else:
+		prompt_player()
+
+func tell_story():
+	$Blackboard/StoryText.text = story % player_words
+	end_game()
+
+func end_game():
+	$Blackboard/EditBox.queue_free()
